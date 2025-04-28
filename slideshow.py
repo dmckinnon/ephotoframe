@@ -1,12 +1,15 @@
 import os
 from google_auth_oauthlib.flow import Flow, InstalledAppFlow
 from googleapiclient.discovery import build
+#from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 import requests
 import json
 from datetime import date, timedelta
 import pygame
 import random
+import pillow_heif
+from PIL import Image
 
 
 # ──────── Configuration ─────────
@@ -83,12 +86,31 @@ def should_sync() -> bool:
         last = date.fromisoformat(f.read().strip())
     return date.today() - last >= timedelta(days=7)
 
+def load_image_any(filepath):
+    ext = os.path.splitext(filepath)[1].lower()
+    if ext == '.heic':
+        # decode HEIC into a Pillow Image
+        heif_file = pillow_heif.read_heif(filepath)
+        pil_img = Image.frombytes(
+            heif_file.mode, heif_file.size, heif_file.data, "raw"
+        )
+        # convert mode if needed
+        if pil_img.mode != 'RGB':
+            pil_img = pil_img.convert('RGB')
+        # convert to a pygame Surface
+        data = pil_img.tobytes()
+        surface = pygame.image.fromstring(data, pil_img.size, pil_img.mode)
+        return surface
+    else:
+        # normal formats (PNG, JPG, etc.)
+        return pygame.image.load(filepath).convert()
+
 def display_slideshow():
     """Display the downloaded photos in a daily-random fullscreen slideshow."""
     # Load and sort photos list
     photos = [os.path.join(DOWNLOAD_DIR, f)
               for f in os.listdir(DOWNLOAD_DIR)
-              if f.lower().endswith(('jpg', 'jpeg', 'png', 'PNG', 'JPG'))]
+              if f.lower().endswith(('jpg', 'jpeg', 'png', 'PNG', 'JPG', 'heic', 'HEIC'))]
     if not photos:
         print("No photos found to display. Please run sync first.")
         return
@@ -107,7 +129,7 @@ def display_slideshow():
     try:
         # Show each photo
         for photo_path in photos:
-            img = pygame.image.load(photo_path).convert()
+            img = load_image_any(photo_path)
             # Original image size
             iw, ih = img.get_size()
 
