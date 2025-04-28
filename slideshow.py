@@ -8,7 +8,7 @@ import json
 from datetime import date, timedelta
 import pygame
 import random
-import pillow_heif
+import pyheif
 from PIL import Image
 
 
@@ -90,7 +90,7 @@ def load_image_any(filepath):
     ext = os.path.splitext(filepath)[1].lower()
     if ext == '.heic':
         # decode HEIC into a Pillow Image
-        heif_file = pillow_heif.read_heif(filepath)
+        heif_file = pyheif.read(filepath)
         pil_img = Image.frombytes(
             heif_file.mode, heif_file.size, heif_file.data, "raw"
         )
