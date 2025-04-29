@@ -19,7 +19,7 @@ CLIENT_SECRET_FILE = 'credentials/client_secret.json'
 # Run local server flow to get user credentials
 flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
 creds = flow.run_local_server(port=0)
-ALBUM_ID        = 'AITBHVUo0xlMsqLPGUHngCqTHJyZcGk7ldN-lhK1jbfNnBUWuD-bHqn6rJP5n6nde3sVSiVujQTk'
+ALBUM_ID        = 'ALBUM ID HERE'
 TOKEN           = creds.token   # from your OAuth flow
 SLIDESHOW_DIR = '/media/pi/New Volume/downloaded_photos'
 DOWNLOAD_DIR    = SLIDESHOW_DIR
