@@ -19,7 +19,9 @@ Next, go to OAuth Consent Screen. Head to Audience, and add yourself as a user. 
 Finally, under 'Data Access', add the scope of `.../auth/photoslibrary.readonly`.
 
 ### Python
+Install magick (`sudo apt install magick`) if you are using HEIC images, since this will pre-convert to jpg before showing.
+
 Get the ID of the album you want and add it to the python script, under ALBUM_ID - you can get this from the URL of the album. 
 
-
+Run the script! It'll sync all images from the album, converting HEIC to jpg, then get a list of the image names and load each image one at a time into memory to display - that way, you won't be RAM limited when you have a lot of images.
 
